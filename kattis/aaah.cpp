@@ -9,6 +9,9 @@ using namespace std;
 int main() {
   string say, doctor;
   cin >> say >> doctor;
-  // print 'no' if our 'aaah' is not long enough, otherwise print 'go'
-  cout << (doctor.length() > say.length() ? "no" : "go") << '\n';
+
+  if(doctor.length() > say.length())
+    cout << "no" << endl;
+  else
+    cout << "go" << endl;
 }
