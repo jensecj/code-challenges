@@ -1,0 +1,5 @@
+a.out
+*.out
+.mypy_cache
+Cargo.lock
+*/**/.gitignore
