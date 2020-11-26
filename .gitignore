@@ -3,3 +3,5 @@ a.out
 .mypy_cache
 Cargo.lock
 */**/.gitignore
+/main
+**/*/main
