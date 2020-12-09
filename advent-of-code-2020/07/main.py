@@ -3,6 +3,8 @@ import re
 from collections import deque
 from compytetive.util import time
 
+import networkx as nx  # type: ignore
+
 
 def read_input(filename):
     with open(filename) as f:
@@ -47,6 +49,27 @@ def part1(bags):
     return len(seen)
 
 
+def build_graph(bags):
+    """Construct a graph from BAGS."""
+    G = nx.DiGraph()
+
+    for b, c in bags.items():
+        for cost, node in c:
+            G.add_edge(b, node, cost=cost)
+
+    return G
+
+
+@time
+def part1_graph(bags):
+    """
+    Another way to solve the problem is to build a graph from the description and count the
+    number of ancestors the shiny gold bag has.
+    """
+    G = build_graph(bags)
+    return len(nx.ancestors(G, "shiny gold"))
+
+
 @time
 def part2(bags):
     """
@@ -69,10 +92,30 @@ def part2(bags):
     return acc
 
 
+@time
+def part2_graph(bags):
+    """
+    Another way to solve the problem is to construct a graph from the problem description, then
+    recurse all out edges starting at shiny gold bag, while counting the cost.
+    """
+    G = build_graph(bags)
+
+    def recurse_bags(bag):
+        total = 0
+        for b, x in G[bag].items():
+            total += x.get("cost") + (x.get("cost") * recurse_bags(b))
+
+        return total
+
+    return recurse_bags("shiny gold")
+
+
 def main():
     data = read_input("input.in")
     print(part1(data))
+    print(part1_graph(data))
     print(part2(data))
+    print(part2_graph(data))
 
 
 if __name__ == "__main__":
@@ -84,8 +127,8 @@ test1_input = read_input("test1.in")
 test2_input = read_input("test2.in")
 
 print("\ntesting...", file=sys.stderr)
-assert part1(test1_input) == 4
-assert part1(real_input) == 287
-assert part2(test1_input) == 32
-assert part2(test2_input) == 126
-assert part2(real_input) == 48160
+assert part1(test1_input) == part1_graph(test1_input) == 4
+assert part1(real_input) == part1_graph(real_input) == 287
+assert part2(test1_input) == part2_graph(test1_input) == 32
+assert part2(test2_input) == part2_graph(test2_input) == 126
+assert part2(real_input) == part2_graph(real_input) == 48160
