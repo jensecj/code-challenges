@@ -133,10 +133,45 @@ def part2(program):
     return manhatten_dist((0, 0), (x, y))
 
 
+@benchmark
+def part2_complex(data):
+    """
+    The problem can also be solved using real numbers.
+    A complex number multiplied with 1j (a complex number with an imaginary unit of 1),
+    corresponds to a counter-clockwise rotation of 90°,
+    a multiplication of -1j corresponds to a clockwise rotation of 90°.
+    """
+    ship = complex(0, 0)
+    waypoint = complex(10, 1)
+
+    for cmd, value in data:
+        if cmd == "N":
+            waypoint += complex(0, value)
+        elif cmd == "S":
+            waypoint += complex(0, -value)
+        elif cmd == "E":
+            waypoint += complex(value, 0)
+        elif cmd == "W":
+            waypoint += complex(-value, 0)
+        elif cmd == "F":
+            ship += waypoint * value
+        elif cmd == "R":
+            turns = value // 90
+            rotation = complex(0, -1) ** turns
+            waypoint *= rotation
+        elif cmd == "L":
+            turns = value // 90
+            rotation = complex(0, 1) ** turns
+            waypoint *= rotation
+
+    return manhatten_dist((0, 0), (ship.real, ship.imag))
+
+
 def main():
     data = read_input("input.in")
     print(part1(data))
     print(part2(data))
+    print(part2_complex(data))
 
 
 if __name__ == "__main__":
@@ -145,8 +180,8 @@ if __name__ == "__main__":
 
 test1_input = read_input("test1.in")
 assert part1(test1_input) == 25
-assert part2(test1_input) == 286
+assert part2(test1_input) == part2_complex(test1_input) == 286
 
 real_input = read_input("input.in")
 assert part1(real_input) == 1294
-assert part2(real_input) == 20592
+assert part2(real_input) == part2_complex(real_input) == 20592
