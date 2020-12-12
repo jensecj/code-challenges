@@ -1,5 +1,5 @@
 from more_itertools import windowed
-from compytetive.util import time
+from compytetive.util import benchmark
 
 
 def read_input(filename):
@@ -35,8 +35,8 @@ def locate_failing_state(states):
     return states.index(False) if False in states else None
 
 
-@time
-def part1(data, preamble=25):
+@benchmark
+def part1(data, preamble):
     states = validate(preamble, data)
 
     if idx := locate_failing_state(states):
@@ -45,34 +45,35 @@ def part1(data, preamble=25):
     return None
 
 
-@time
-def part2(data, preamble=25):
-    invalid_num = part1(data, preamble)
-
+@benchmark
+def part2(data, num, preamble):
+    """
+    Bruteforce approach:
+    generate sliding windows of all lengths from 2 -> length of input,
+    then test if any of them sum to NUM.
+    """
     for i in range(2, len(data) - 1):
         for w in windowed(data, n=i, step=1):
-            if sum(w) == invalid_num:
+            if sum(w) == num:
                 return min(w) + max(w)
 
     return None
 
 
-@time
-def part2_faster(data, preamble=25):
+@benchmark
+def part2_faster(data, num, preamble):
     """
     The problem can be solved using a sliding window over the data,
     expanding to the left when the sum of the window is less than the number we're
     looking for, and contracting from the left when the sum is bigger.
     """
-    invalid_num = part1(data, preamble)
-
     left, right = 0, 1
     window = data[left:right]
 
-    while (s := sum(window)) != invalid_num:
-        if s > invalid_num:
+    while (s := sum(window)) != num:
+        if s > num:
             left += 1
-        if s < invalid_num:
+        if s < num:
             right += 1
 
         window = data[left:right]
@@ -82,18 +83,25 @@ def part2_faster(data, preamble=25):
 
 def main():
     data = read_input("input.in")
-    print(part1(data))
-    print(part2(data))
+    preamble = 25
+
+    invalid_number = part1(data, preamble)
+    print(invalid_number)
+    print(part2(data, invalid_number, preamble))
+    print(part2_faster(data, invalid_number, preamble))
 
 
 if __name__ == "__main__":
     main()
 
+
 test1_input = read_input("test1.in")
-assert part1(test1_input, preamble=5) == 127
-assert part2(test1_input, preamble=5) == part2_faster(test1_input, preamble=5) == 62
+assert part1(test1_input, 5) == 127
+assert part2(test1_input, 127, 5) == 62
+assert part2_faster(test1_input, 127, 5) == 62
 
 
 real_input = read_input("input.in")
-assert part1(real_input) == 31161678
-assert part2(real_input) == part2_faster(real_input) == 5453868
+assert part1(real_input, 25) == 31161678
+assert part2(real_input, 31161678, 25) == 5453868
+assert part2_faster(real_input, 31161678, 25) == 5453868

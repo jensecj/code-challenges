@@ -1,5 +1,5 @@
 import networkx as nx  # type: ignore
-from compytetive.util import time
+from compytetive.util import benchmark
 from collections import defaultdict
 
 
@@ -18,7 +18,7 @@ def get_built_in_joltage(data):
     return max(data) + 3
 
 
-@time
+@benchmark
 def part1(data):
     built_in_joltage = get_built_in_joltage(data)
 
@@ -57,7 +57,7 @@ def build_graph(data):
     return G
 
 
-@time
+@benchmark
 def part1_graph(data):
     """
     The problem can also be modeled as a graph, and solved using
@@ -82,7 +82,7 @@ def part1_graph(data):
     return d1 * d3
 
 
-@time
+@benchmark
 def part2(data):
     """
     The problem can be solved using dynamic programming.
@@ -109,6 +109,7 @@ def part2(data):
 
 
 @time
+@benchmark
 def part2_graph(data):
     """
     This is the is the graph theoretic solution to the problem.

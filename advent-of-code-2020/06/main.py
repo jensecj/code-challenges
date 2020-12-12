@@ -1,5 +1,4 @@
 import sys
-from collections import deque
 
 
 def read_input():
@@ -13,7 +12,7 @@ def read_input():
 def part1(input):
     answer = 0
     for batch in input:
-        sets = map(set, [p for p in batch])
+        sets = map(set, batch)
         answer += len(set.union(*sets))
 
     return answer
@@ -22,7 +21,7 @@ def part1(input):
 def part2(input):
     answer = 0
     for batch in input:
-        sets = map(set, [p for p in batch])
+        sets = map(set, batch)
         answer += len(set.intersection(*sets))
 
     return answer

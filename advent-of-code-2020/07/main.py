@@ -1,7 +1,7 @@
 import sys
 import re
 from collections import deque
-from compytetive.util import time
+from compytetive.util import benchmark
 
 import networkx as nx  # type: ignore
 
@@ -29,7 +29,7 @@ def contains_bag(bag, bags):
     return contains
 
 
-@time
+@benchmark
 def part1(bags):
     """
     To find the set of bags which contain a shiny gold bag, directly or indirectly, we start at
@@ -60,7 +60,7 @@ def build_graph(bags):
     return G
 
 
-@time
+@benchmark
 def part1_graph(bags):
     """
     Another way to solve the problem is to build a graph from the description and count the
@@ -70,7 +70,7 @@ def part1_graph(bags):
     return len(nx.ancestors(G, "shiny gold"))
 
 
-@time
+@benchmark
 def part2(bags):
     """
     To find the number of bags that a bag contain, we start at our shiny gold bag, then iterate
@@ -92,7 +92,7 @@ def part2(bags):
     return acc
 
 
-@time
+@benchmark
 def part2_graph(bags):
     """
     Another way to solve the problem is to construct a graph from the problem description, then

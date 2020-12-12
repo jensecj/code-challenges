@@ -49,11 +49,11 @@ def more_validate(passport):
     pid (Passport ID) - a nine-digit number, including leading zeroes.
     cid (Country ID) - ignored, missing or not.
     """
-    byr = 1920 <= int(passport.get("byr")) <= 2002
-    iyr = 2010 <= int(passport.get("iyr")) <= 2020
-    eyr = 2020 <= int(passport.get("eyr")) <= 2030
+    byr = 1920 <= int(passport["byr"]) <= 2002
+    iyr = 2010 <= int(passport["iyr"]) <= 2020
+    eyr = 2020 <= int(passport["eyr"]) <= 2030
 
-    hgt_raw = passport.get("hgt")
+    hgt_raw = passport["hgt"]
     hgt_val = hgt_raw[:-2]
     hgt_val = int(hgt_val) if hgt_val.isdigit() else False
 
@@ -64,13 +64,13 @@ def more_validate(passport):
         hgt = 59 <= hgt_val <= 76
 
     hcl = False
-    if (hcl_val := passport.get("hcl")) and hcl_val.startswith("#"):
+    if (hcl_val := passport["hcl"]) and hcl_val.startswith("#"):
         hcl = all(c in string.hexdigits for c in hcl_val[1:])
 
-    ecl = passport.get("ecl") in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+    ecl = passport["ecl"] in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 
     pid = False
-    if (pid_val := passport.get("pid")) and len(pid_val) == 9:
+    if (pid_val := passport["pid"]) and len(pid_val) == 9:
         pid = pid_val.isdigit()
 
     return all([byr, iyr, eyr, hgt, hcl, ecl, pid])

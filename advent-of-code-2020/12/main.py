@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 from compytetive.algorithms import manhatten_dist
-from compytetive.util import time
+from compytetive.util import benchmark
 
 
 Point = Tuple[int, int]
@@ -73,7 +73,7 @@ assert change_direction("S", "R", 90) == "W"
 assert change_direction("W", "R", 90) == "N"
 
 
-@time
+@benchmark
 def part1(program):
     direction = "E"
     x, y = (0, 0)
@@ -115,7 +115,7 @@ assert rotate_point((10, 4), "R", 180) == rotate_point((10, 4), "L", 180) == (-1
 assert rotate_point((10, 4), "R", 270) == rotate_point((10, 4), "L", 90) == (-4, 10)
 
 
-@time
+@benchmark
 def part2(program):
     x, y = (0, 0)
     wx, wy = (10, 1)

@@ -2,7 +2,7 @@ from typing import Any, Tuple, List, Callable
 
 import copy
 
-from compytetive.util import time
+from compytetive.util import benchmark
 
 Board = List[List[Any]]
 Seat = Tuple[int, int]
@@ -91,7 +91,7 @@ def step_state(state: Board, free_rule: Callable, occupied_rule: Callable) -> Bo
     return board
 
 
-@time
+@benchmark
 def part1(data: Board) -> int:
     board = copy.deepcopy(data)
     lastboard = None
@@ -109,7 +109,7 @@ def part1(data: Board) -> int:
     return sum([row.count(OCCUPIED) for row in board])
 
 
-@time
+@benchmark
 def part2(data: Board) -> int:
     board = copy.deepcopy(data)
     lastboard = None
