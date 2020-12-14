@@ -1,4 +1,7 @@
+# tags: greedy, window
+
 from more_itertools import windowed
+
 from compytetive.util import benchmark
 
 
@@ -35,7 +38,6 @@ def locate_failing_state(states):
     return states.index(False) if False in states else None
 
 
-@benchmark
 def part1(data, preamble):
     states = validate(preamble, data)
 
@@ -45,8 +47,7 @@ def part1(data, preamble):
     return None
 
 
-@benchmark
-def part2(data, num, preamble):
+def part2(data, num):
     """
     Bruteforce approach:
     generate sliding windows of all lengths from 2 -> length of input,
@@ -60,8 +61,7 @@ def part2(data, num, preamble):
     return None
 
 
-@benchmark
-def part2_faster(data, num, preamble):
+def part2_faster(data, num):
     """
     The problem can be solved using a sliding window over the data,
     expanding to the left when the sum of the window is less than the number we're
@@ -82,26 +82,26 @@ def part2_faster(data, num, preamble):
 
 
 def main():
-    data = read_input("input.in")
+    data = read_input("../input.in")
     preamble = 25
 
-    invalid_number = part1(data, preamble)
+    invalid_number = benchmark(part1)(data, preamble)
     print(invalid_number)
-    print(part2(data, invalid_number, preamble))
-    print(part2_faster(data, invalid_number, preamble))
+    print(benchmark(part2)(data, invalid_number))
+    print(benchmark(part2_faster)(data, invalid_number))
 
 
 if __name__ == "__main__":
     main()
 
 
-test1_input = read_input("test1.in")
+test1_input = read_input("../test1.in")
 assert part1(test1_input, 5) == 127
-assert part2(test1_input, 127, 5) == 62
-assert part2_faster(test1_input, 127, 5) == 62
+assert part2(test1_input, 127) == 62
+assert part2_faster(test1_input, 127) == 62
 
 
-real_input = read_input("input.in")
+real_input = read_input("../input.in")
 assert part1(real_input, 25) == 31161678
-assert part2(real_input, 31161678, 25) == 5453868
-assert part2_faster(real_input, 31161678, 25) == 5453868
+assert part2(real_input, 31161678) == 5453868
+assert part2_faster(real_input, 31161678) == 5453868
