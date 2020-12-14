@@ -1,3 +1,5 @@
+# tags: simulation
+
 def read_input(filename):
     def _read():
         with open(filename) as f:

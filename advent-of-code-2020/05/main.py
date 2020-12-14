@@ -1,8 +1,12 @@
+# tags: binary space partitioning
+
 import sys
 
 
 def decode_seat(seat):
     """decode a seat-string into a seat (row,column,id)"""
+
+    # NOTE: if you decode the seat-string into a single int, you get the seat id
 
     # we can directly convert the seat string into its location because it already uses a
     # binary partitioning system for locating seats

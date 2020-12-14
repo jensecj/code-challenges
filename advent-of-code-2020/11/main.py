@@ -1,3 +1,5 @@
+# tags: simulation, grid
+
 from typing import Any, Tuple, List, Callable
 
 import copy

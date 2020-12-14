@@ -1,3 +1,5 @@
+# tags: dynamic programming (dp), graph theory
+
 import networkx as nx  # type: ignore
 from compytetive.util import benchmark
 from collections import defaultdict

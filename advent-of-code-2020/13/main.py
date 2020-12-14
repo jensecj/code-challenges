@@ -1,3 +1,5 @@
+# tags: chinese remainder theorem (crt), lcm
+
 import math
 import itertools as it
 import operator as op

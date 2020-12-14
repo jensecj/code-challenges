@@ -1,7 +1,6 @@
-a.out
-*.out
-.mypy_cache
 Cargo.lock
-*/**/.gitignore
-/main
+.mypy_cache
+**/*/a.out
+**/*/*.out
+**/*/.gitignore
 **/*/main

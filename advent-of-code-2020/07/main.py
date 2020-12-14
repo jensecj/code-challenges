@@ -1,3 +1,5 @@
+# tags: graph theory, parsing
+
 import sys
 import re
 from collections import deque

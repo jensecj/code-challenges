@@ -1,3 +1,5 @@
+// tags: 3SUM
+
 #include <algorithm>
 #include <array>
 #include <functional>

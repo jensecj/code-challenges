@@ -1,3 +1,5 @@
+# tags: simulation, complex numbers
+
 from typing import List, Tuple
 
 from compytetive.algorithms import manhatten_dist

@@ -1,3 +1,5 @@
+# tags: parsing
+
 import sys
 import string
 
