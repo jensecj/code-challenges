@@ -1,6 +1,6 @@
 # tags: simulation, bitmasking
 
-from typing import Set
+from typing import Generator
 
 import re
 import itertools as it
@@ -21,21 +21,13 @@ def read_input(filename):
     return commands
 
 
-def bitstr(n: int, length: int = 36) -> str:
+def int_to_bitstring(n: int, length: int = 36) -> str:
     """Convert N into a bitstring of LENGTH, padding with 0's as needed."""
-    bits = f"{n:b}"
-    assert length >= len(bits)
-
-    bits = "0" * (length - len(bits)) + bits
-    return bits
+    return f"{n:0{length}b}"
 
 
-assert bitstr(1, 3) == "001"
-assert bitstr(2, 3) == "010"
-assert bitstr(3, 3) == "011"
-assert bitstr(4, 3) == "100"
-assert bitstr(42, 6) == "101010"
-assert bitstr(42, 8) == "00101010"
+def bitstring_to_int(bits: str) -> int:
+    return int(bits, 2)
 
 
 def overlay_mask(mask: str, overlay: str, ignore: str) -> str:
@@ -54,6 +46,18 @@ assert overlay_mask("101010", "X1001X", "0") == "X1101X"
 assert overlay_mask("101010", "X1001X", "X") == "110010"
 
 
+def make_or_mask(mask: str):
+    return int(mask.replace("X", "0"), 2)
+
+
+def make_and_mask(mask: str):
+    return int(mask.replace("1", "0").replace("X", "1"), 2)
+
+
+def int_bitmask(n: int, mask: str):
+    return (n & make_and_mask(mask)) | make_or_mask(mask)
+
+
 def part1(data):
     memory = {}
     mask = "X" * 36
@@ -65,19 +69,19 @@ def part1(data):
             mask = rest[0]
         elif cmd == "mem":
             mem, val = rest
-            m = overlay_mask(bitstr(val), mask, "X")
+            m = overlay_mask(int_to_bitstring(val), mask, "X")
             memory[mem] = int(m, 2)
+            # memory[mem] = int_bitmask(val, mask)
 
     return sum(memory.values())
 
 
-def gen_masks_q(mask: str) -> Set[int]:
+def gen_masks_q(mask: str) -> Generator[int, None, None]:
     """
     Generate all bitstring permutations of MASK, by essentiallty doing DFS,
     expanding masks until they contain no more X's, and collection the leaves.
     """
     q = [mask]
-    locations = set()
 
     # iteratively generate all possible masks from MASK
     while q:
@@ -85,51 +89,71 @@ def gen_masks_q(mask: str) -> Set[int]:
 
         # a mask is complete once there are no more X's to replace
         if "X" not in m:
-            locations.add(m)
+            yield int(m, 2)
         else:
             # for each X, replace it with both 0 and 1
-            q.append(m.replace("X", "0", 1))
             q.append(m.replace("X", "1", 1))
-
-    # remember to convert the bitstrings to integer memory locations
-    return set(int(m, 2) for m in locations)
+            q.append(m.replace("X", "0", 1))
 
 
-def gen_masks(mask: str) -> Set[int]:
+def gen_masks_p(mask: str) -> Generator[int, None, None]:
     """
     Itertools.product can also be used to generate the bitstring permutations
     """
-    args = [i.replace("X", "01") for i in list(mask)]  # mask -> product args
-    permutations = list(it.product(*args))  # product args -> permutations
-    s = ["".join(s) for s in permutations]  # permutations -> bit strings
-    ns = [int(i, 2) for i in s]  # bit strings -> numbers
-
-    return set(ns)
+    args = [i.replace("X", "01") for i in list(mask)]
+    for p in it.product(*args):
+        yield int("".join(p), 2)
 
 
-assert gen_masks(overlay_mask(bitstr(42, 6), "X1001X", "0")) == set([26, 27, 58, 59])
-assert gen_masks(
-    overlay_mask(bitstr(25508), "X1001X10000111001011X1001011X0010110", "0")
-) == set(
-    [
-        20968074038,
-        54254103350,
-        19894364982,
-        55327845174,
-        20968106934,
-        54254070710,
-        20968106806,
-        19894332342,
-        54254103478,
-        54254070582,
-        19894365110,
-        55327812534,
-        19894332214,
-        20968074166,
-        55327812406,
-        55327845302,
-    ]
-)
+def gen_masks_b(mask: str) -> Generator[int, None, None]:
+    """
+    The permutations can also be enumerated directly as integers using bitwise operators.
+    """
+    omask = make_or_mask(mask)
+    amask = make_and_mask(mask)
+
+    n = 0
+
+    yield n | omask
+    while n := (n + ~amask + 1) & amask:
+        yield n | omask
+
+
+# print("gen_masks_b(X1001X) =\t%s" % [*gen_masks_b("X1001X")])
+# print("correct =\t\t%s" % [int(s, 2) for s in ["010010", "010011", "110010", "110011"]])
+# print("correct =\t\t%s" % [int_to_bitstring(i, 6) for i in gen_masks_b("X1001X")])
+
+M = "X1001X"
+R = [18, 19, 50, 51]
+
+assert list(gen_masks_q(M)) == R
+assert list(gen_masks_p(M)) == R
+assert list(gen_masks_b(M)) == R
+
+
+M = "X1001X10000111001011X1101011X0110110"
+R = [
+    19894332214,
+    19894332342,
+    19894364982,
+    19894365110,
+    20968074038,
+    20968074166,
+    20968106806,
+    20968106934,
+    54254070582,
+    54254070710,
+    54254103350,
+    54254103478,
+    55327812406,
+    55327812534,
+    55327845174,
+    55327845302,
+]
+
+assert list(benchmark(gen_masks_q)(M)) == R
+assert list(benchmark(gen_masks_p)(M)) == R
+assert list(benchmark(gen_masks_b)(M)) == R
 
 
 def part2(data):
@@ -142,8 +166,8 @@ def part2(data):
             mask = rest[0]
         elif cmd == "mem":
             mem, val = rest
-            o = overlay_mask(bitstr(mem), mask, "0")
-            for m in gen_masks(o):
+            o = overlay_mask(int_to_bitstring(mem), mask, "0")
+            for m in gen_masks_b(o):
                 memory[m] = val
 
     return sum(memory.values())
