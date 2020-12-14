@@ -1,6 +1,9 @@
 # tags: simulation, bitmasking
 
+from typing import Set
+
 import re
+import itertools as it
 
 from compytetive.util import benchmark
 
@@ -35,7 +38,7 @@ assert bitstr(42, 6) == "101010"
 assert bitstr(42, 8) == "00101010"
 
 
-def overlay_mask(mask: str, overlay: str, ignore) -> str:
+def overlay_mask(mask: str, overlay: str, ignore: str) -> str:
     """Place OVERLAY over MASK, ignoring bits in MASK where bit == IGNORE."""
     assert len(mask) == len(overlay)
 
@@ -68,7 +71,11 @@ def part1(data):
     return sum(memory.values())
 
 
-def gen_masks(mask):
+def gen_masks_q(mask: str) -> Set[int]:
+    """
+    Generate all bitstring permutations of MASK, by essentiallty doing DFS,
+    expanding masks until they contain no more X's, and collection the leaves.
+    """
     q = [mask]
     locations = set()
 
@@ -86,6 +93,18 @@ def gen_masks(mask):
 
     # remember to convert the bitstrings to integer memory locations
     return set(int(m, 2) for m in locations)
+
+
+def gen_masks(mask: str) -> Set[int]:
+    """
+    Itertools.product can also be used to generate the bitstring permutations
+    """
+    args = [i.replace("X", "01") for i in list(mask)]  # mask -> product args
+    permutations = list(it.product(*args))  # product args -> permutations
+    s = ["".join(s) for s in permutations]  # permutations -> bit strings
+    ns = [int(i, 2) for i in s]  # bit strings -> numbers
+
+    return set(ns)
 
 
 assert gen_masks(overlay_mask(bitstr(42, 6), "X1001X", "0")) == set([26, 27, 58, 59])
