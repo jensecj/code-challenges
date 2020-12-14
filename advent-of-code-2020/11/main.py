@@ -93,7 +93,6 @@ def step_state(state: Board, free_rule: Callable, occupied_rule: Callable) -> Bo
     return board
 
 
-@benchmark
 def part1(data: Board) -> int:
     board = copy.deepcopy(data)
     lastboard = None
@@ -111,7 +110,6 @@ def part1(data: Board) -> int:
     return sum([row.count(OCCUPIED) for row in board])
 
 
-@benchmark
 def part2(data: Board) -> int:
     board = copy.deepcopy(data)
     lastboard = None
@@ -131,8 +129,8 @@ def part2(data: Board) -> int:
 
 def main():
     data = read_input("input.in")
-    print(part1(data))
-    print(part2(data))
+    print(benchmark(part1)(data))
+    print(benchmark(part2)(data))
 
 
 if __name__ == "__main__":

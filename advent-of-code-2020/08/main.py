@@ -1,14 +1,16 @@
 # tags: simulation
 
-def read_input(filename):
-    def _read():
-        with open(filename) as f:
-            data = f.readlines()
-            data = [s.strip() for s in data]
-            for cmd, val in [s.split() for s in data]:
-                yield cmd, int(val)
+import re
 
-    return list(_read())
+from compytetive.util import benchmark
+
+
+def read_input(filename):
+    with open(filename) as f:
+        data = f.read()
+
+        for cmd, op in re.findall(r"(...) ([+-]\d+)", data):
+            yield cmd, int(op)
 
 
 def run(program):
@@ -75,15 +77,15 @@ def part2(program):
 
 
 def main():
-    data = read_input("input.in")
-    print(part1(data))
-    print(part2(data))
+    data = list(read_input("input.in"))
+    print(benchmark(part1)(data))
+    print(benchmark(part2)(data))
 
 
 if __name__ == "__main__":
     main()
 
 
-real_input = read_input("input.in")
+real_input = list(read_input("input.in"))
 assert part1(real_input) == 1727
 assert part2(real_input) == 552

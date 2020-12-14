@@ -75,7 +75,6 @@ assert change_direction("S", "R", 90) == "W"
 assert change_direction("W", "R", 90) == "N"
 
 
-@benchmark
 def part1(program):
     direction = "E"
     x, y = (0, 0)
@@ -117,7 +116,6 @@ assert rotate_point((10, 4), "R", 180) == rotate_point((10, 4), "L", 180) == (-1
 assert rotate_point((10, 4), "R", 270) == rotate_point((10, 4), "L", 90) == (-4, 10)
 
 
-@benchmark
 def part2(program):
     x, y = (0, 0)
     wx, wy = (10, 1)
@@ -135,7 +133,6 @@ def part2(program):
     return manhatten_dist((0, 0), (x, y))
 
 
-@benchmark
 def part2_complex(data):
     """
     The problem can also be solved using real numbers.
@@ -171,9 +168,9 @@ def part2_complex(data):
 
 def main():
     data = read_input("input.in")
-    print(part1(data))
-    print(part2(data))
-    print(part2_complex(data))
+    print(benchmark(part1)(data))
+    print(benchmark(part2)(data))
+    print(benchmark(part2_complex)(data))
 
 
 if __name__ == "__main__":

@@ -8,8 +8,7 @@ from collections import defaultdict
 def read_input(filename):
     with open(filename) as f:
         data = f.readlines()
-        data = [a.strip() for a in data]
-        data = [int(a) for a in data]
+        data = [int(d) for d in data]
 
     # each entry only cares about the entries that are within 3 jolts of it self,
     # so sorting make great sense
@@ -20,7 +19,6 @@ def get_built_in_joltage(data):
     return max(data) + 3
 
 
-@benchmark
 def part1(data):
     built_in_joltage = get_built_in_joltage(data)
 
@@ -59,7 +57,6 @@ def build_graph(data):
     return G
 
 
-@benchmark
 def part1_graph(data):
     """
     The problem can also be modeled as a graph, and solved using
@@ -84,7 +81,6 @@ def part1_graph(data):
     return d1 * d3
 
 
-@benchmark
 def part2(data):
     """
     The problem can be solved using dynamic programming.
@@ -110,8 +106,6 @@ def part2(data):
     return table[built_in_joltage]
 
 
-@time
-@benchmark
 def part2_graph(data):
     """
     This is the is the graph theoretic solution to the problem.
@@ -132,10 +126,10 @@ def part2_graph(data):
 
 def main():
     data = read_input("input.in")
-    print(part1(data))
-    print(part2(data))
-    # print(part1_graph(data))
-    # print(part2_graph(data))
+    print(benchmark(part1)(data))
+    print(benchmark(part2)(data))
+    print(benchmark(part1_graph)(data))
+    # print(benchmark(part2_graph)(data))
 
 
 if __name__ == "__main__":

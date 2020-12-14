@@ -1,6 +1,6 @@
 # tags: binary space partitioning
 
-import sys
+from compytetive.util import benchmark
 
 
 def decode_seat(seat):
@@ -30,25 +30,26 @@ assert decode_seat("FBBBBBBLLL") == (63, 0, 63 * 8)
 assert decode_seat("BBBFBBBRRR") == (119, 7, 119 * 8 + 7)
 
 
-def read_input():
-    input = sys.stdin.readlines()
-    for s in input:
-        yield decode_seat(s.strip())
+def read_input(filename):
+    with open(filename) as f:
+        data = f.readlines()
+        for s in data:
+            yield decode_seat(s.strip())
 
 
-def part1(input):
+def part1(data):
     """Return the seat with the highest Seat ID"""
-    return max(input, key=lambda x: x[-1])
+    return max(data, key=lambda x: x[-1])
 
 
-def part2(input):
+def part2(data):
     """
     Return the empty seat somewhere in the plane,
     but not in the beginning or end of the plane
     """
 
     # this problem only needs to work on the seat ids
-    s = set([i[-1] for i in input])
+    s = set(i[-1] for i in data)
 
     # the empty seat must be between two occupied seats, this way it is also not in the
     # beginning of the end of the plane, because we know there are occupied seats before or
@@ -59,12 +60,19 @@ def part2(input):
         if (i - 1) not in s and (i - 2) in s:
             return i - 1
 
+    return None
+
 
 def main():
-    input = list(read_input())
-    print(part1(input))
-    print(part2(input))
+    data = list(read_input("input.in"))
+    print(benchmark(part1)(data))
+    print(benchmark(part2)(data))
 
 
 if __name__ == "__main__":
     main()
+
+
+real_input = list(read_input("input.in"))
+assert part1(real_input) == (119, 7, 959)
+assert part2(real_input) == 527

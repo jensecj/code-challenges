@@ -1,24 +1,22 @@
 # tags: parsing
 
-import sys
+import re
 import string
 
+from compytetive.util import benchmark
 
-def read_input():
-    input = sys.stdin.read()
-    batches = input.split("\n\n")
-    raw_passport = [b.split() for b in batches]
 
-    passports = []
-    for raw in raw_passport:
-        passport = {}
-        for p in raw:
-            k, v = p.split(":")
-            passport.update({f"{k}": v})
+def read_input(filename):
+    with open(filename) as f:
+        data = f.read()
+        batches = data.split("\n\n")
 
-        passports.append(passport)
+        passports = []
+        for raw in batches:
+            passport = dict((k, v) for k, v in re.findall(r"(...):(\S+)", raw))
+            passports.append(passport)
 
-    return passports
+        return passports
 
 
 def validate(passport):
@@ -97,13 +95,18 @@ def part2(passports):
 
 
 def main():
-    input = read_input()
-    print(part1(input))
-    print(part2(input))
+    data = read_input("input.in")
+    print(benchmark(part1)(data))
+    print(benchmark(part2)(data))
 
 
 if __name__ == "__main__":
     main()
+
+
+real_input = read_input("input.in")
+assert part1(real_input) == 237
+assert part2(real_input) == 172
 
 assert (
     validate(

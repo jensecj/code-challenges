@@ -1,11 +1,11 @@
 # tags: graph theory, parsing
 
-import sys
 import re
 from collections import deque
-from compytetive.util import benchmark
 
 import networkx as nx  # type: ignore
+
+from compytetive.util import benchmark
 
 
 def read_input(filename):
@@ -31,7 +31,6 @@ def contains_bag(bag, bags):
     return contains
 
 
-@benchmark
 def part1(bags):
     """
     To find the set of bags which contain a shiny gold bag, directly or indirectly, we start at
@@ -62,7 +61,6 @@ def build_graph(bags):
     return G
 
 
-@benchmark
 def part1_graph(bags):
     """
     Another way to solve the problem is to build a graph from the description and count the
@@ -72,7 +70,6 @@ def part1_graph(bags):
     return len(nx.ancestors(G, "shiny gold"))
 
 
-@benchmark
 def part2(bags):
     """
     To find the number of bags that a bag contain, we start at our shiny gold bag, then iterate
@@ -94,7 +91,6 @@ def part2(bags):
     return acc
 
 
-@benchmark
 def part2_graph(bags):
     """
     Another way to solve the problem is to construct a graph from the problem description, then
@@ -114,23 +110,23 @@ def part2_graph(bags):
 
 def main():
     data = read_input("input.in")
-    print(part1(data))
-    print(part1_graph(data))
-    print(part2(data))
-    print(part2_graph(data))
+    print(benchmark(part1)(data))
+    print(benchmark(part1_graph)(data))
+    print(benchmark(part2)(data))
+    print(benchmark(part2_graph)(data))
 
 
 if __name__ == "__main__":
     main()
 
 
-real_input = read_input("input.in")
 test1_input = read_input("test1.in")
-test2_input = read_input("test2.in")
-
-print("\ntesting...", file=sys.stderr)
 assert part1(test1_input) == part1_graph(test1_input) == 4
-assert part1(real_input) == part1_graph(real_input) == 287
 assert part2(test1_input) == part2_graph(test1_input) == 32
+
+test2_input = read_input("test2.in")
 assert part2(test2_input) == part2_graph(test2_input) == 126
+
+real_input = read_input("input.in")
+assert part1(real_input) == part1_graph(real_input) == 287
 assert part2(real_input) == part2_graph(real_input) == 48160
