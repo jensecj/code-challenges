@@ -29,11 +29,12 @@
   (loop [ln coll]
     (let* [myfn (partial #'hamming-distance (first ln))
            distances (map myfn (rest ln))
-           myseq (vec distances)]
+           dist-vec (vec distances)]
       (cond
-        (empty? myseq) nil
-        (some #(= 1 %) myseq) ;; return pair of strings with a edit-distance of 1
-        [(first ln) (second (flatten (filter #(= 1 (first %)) (map vector myseq (rest ln)))))]
+        (empty? dist-vec) nil
+        (some #(= 1 %) dist-vec)
+        ;; return pair of strings with a edit-distance of 1
+        [(first ln) (second (flatten (filter #(= 1 (first %)) (map vector dist-vec (rest ln)))))]
         :else (recur (rest ln))))))
 
 (defn- equal-part [s1 s2]

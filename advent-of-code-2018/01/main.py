@@ -39,6 +39,7 @@ def main():
 
     input_data = input_data.split('\n')
     input_data = [ s for s in input_data if s ] # remove empty entries
+
     input_data = [ s.replace('+', '') for s in input_data ] # remove surplofuous + signs
     input_data = [ int(s) for s in input_data ] # convert to a list of ints
 

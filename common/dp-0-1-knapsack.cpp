@@ -14,8 +14,7 @@ using namespace std;
 
 // build a DP-table in a bottom-up manner, runtime is O(n*W), for n
 // items and a knapsack with capacity W.
-int DP_iterative(const vector<int> &values, const vector<int> &weights,
-                 const int knapsack) {
+int DP_iterative(const vector<int> &values, const vector<int> &weights, const int knapsack) {
   int num_items = values.size();
 
   // DP table, values * capacity

@@ -49,7 +49,7 @@ def intcode_computer(program):
             pc = mul(program, pc)
 
         else:
-            # print("something went wrong")
+            print("something went wrong")
             break
 
         # print(program)
