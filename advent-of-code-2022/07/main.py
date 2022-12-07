@@ -1,6 +1,6 @@
 # tags: parsing
 
-import re
+from itertools import accumulate
 from collections import defaultdict
 
 from compytetive.util import benchmark
@@ -13,30 +13,32 @@ def read_input(filename):
     return data
 
 
-def part1(data):
-    i = 0
+def calc_sizes(data):
     path = []
     sizes = defaultdict(int)
+    for line in data:
+        match line.split():
+            case "$", "cd", "..":
+                path.pop()
+            case "$", "cd", d:
+                path.append(d)
+            case ["dir", _] | ["$", "ls"]:
+                # we can ignore 'dir' lines, because we only care about the sizes of
+                # directories, which we only get information about on 'ls' calls.  we can
+                # ignore the 'ls' command, because each line with information about file sizes
+                # must belong to the directory we last cd'ed into, unlike the real `ls', this
+                # one takes no args.
+                pass
+            case size, _:
+                # for each file, we add its size to the current dir, and all its parents
+                # dont actually need the lambda here, because all paths are mysteriously unique
+                for p in accumulate(path, lambda a, b: "/".join((a, b))):
+                    sizes[p] += int(size)
+    return sizes
 
-    while i < len(data):
-        cmd = data[i]
-        if cmd == "$ cd ..":
-            path.pop()
-        elif c := re.search(r"\$ cd (.+)", cmd):
-            path.append(c.group(1))
-        elif cmd == "$ ls":
-            # keep popping ls-lines until we hit the next command
-            while i + 1 < len(data) and not data[i + 1].startswith("$"):
-                i += 1
-                # for each ls-line we update the size of the current directory
-                # and all its parents, so we can just ignore 'dir' lines
-                if data[i].startswith("dir"):
-                    continue
-                size = data[i].split(" ")[0]
-                for r in range(len(path), 0, -1):
-                    part = "/".join(path[:r])
-                    sizes[part] += int(size)
-        i += 1
+
+def part1(data):
+    sizes = calc_sizes(data)
 
     # find sums of all directories whose size is smaller then 100000
     val = 0
@@ -48,29 +50,7 @@ def part1(data):
 
 
 def part2(data):
-    i = 0
-    path = []
-    sizes = defaultdict(int)
-
-    while i < len(data):
-        cmd = data[i]
-        if cmd == "$ cd ..":
-            path.pop()
-        elif c := re.search(r"\$ cd (.+)", cmd):
-            path.append(c.group(1))
-        elif cmd == "$ ls":
-            # keep popping ls-lines until we hit the next command
-            while i + 1 < len(data) and not data[i + 1].startswith("$"):
-                i += 1
-                # for each ls-line we update the size of the current directory
-                # and all its parents, so we can just ignore 'dir' lines
-                if data[i].startswith("dir"):
-                    continue
-                size = data[i].split(" ")[0]
-                for r in range(len(path), 0, -1):
-                    part = "/".join(path[:r])
-                    sizes[part] += int(size)
-        i += 1
+    sizes = calc_sizes(data)
 
     used_space = sizes["/"]
     update_size = 70000000 - 30000000
