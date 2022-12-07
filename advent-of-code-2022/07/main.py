@@ -41,12 +41,7 @@ def part1(data):
     sizes = calc_sizes(data)
 
     # find sums of all directories whose size is smaller then 100000
-    val = 0
-    for v in sizes.values():
-        if v <= 100000:
-            val += v
-
-    return val
+    return sum(v for v in sizes.values() if v <= 100000)
 
 
 def part2(data):
@@ -57,12 +52,7 @@ def part2(data):
     delete_size = used_space - update_size
 
     # find the smallest dir to delete to free up enough space to update
-    target = 2147483647
-    for v in sizes.values():
-        if v >= delete_size:
-            target = min(target, v)
-
-    return target
+    return min(v for v in sizes.values() if v >= delete_size)
 
 
 def main():
