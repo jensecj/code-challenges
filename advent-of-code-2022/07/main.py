@@ -14,6 +14,12 @@ def read_input(filename):
 
 
 def calc_sizes(data):
+    """
+    The main idea here is to capture the size of each file and add it to the current
+    directory, as well as all parent dirs, that way we can compress the "directory tree" into a
+    map of just `path -> size', and we dont need to store the child directories of each dir,
+    and later recursively calculate a directories size.
+    """
     path = []
     sizes = defaultdict(int)
     for line in data:
@@ -47,6 +53,7 @@ def part1(data):
 def part2(data):
     sizes = calc_sizes(data)
 
+    # / is the biggest dir, because its the root of all other dirs
     used_space = sizes["/"]
     update_size = 70000000 - 30000000
     delete_size = used_space - update_size
